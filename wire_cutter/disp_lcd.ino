@@ -1,5 +1,6 @@
 #include <LiquidCrystal.h>
 #include <string.h>
+#include <stdio.h>
 
 #define LCD_RS 9 //D9
 #define LCD_E 10 //D10
