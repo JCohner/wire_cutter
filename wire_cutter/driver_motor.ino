@@ -2,7 +2,7 @@
 #define INA1 7 //D7
 #define INA2 4 //D4
 #define PWM 5//D5
-#define motor_io 8 //D8
+#define MOTOR_IO A7 //REMOVED THIS FUNCTIONALITY TO FREE UP I2C Pins
 
 int motor_duty = 0;
 volatile bool state = 0;
@@ -13,8 +13,8 @@ void motor_setup(){
   pinMode(PWM,OUTPUT);
 
   /*Motor button pin init*/
-  pinMode(motor_io, INPUT);
-  attachPinChangeInterrupt(motor_io, button_press,FALLING);
+  pinMode(MOTOR_IO, INPUT);
+  attachPinChangeInterrupt(MOTOR_IO, button_press,FALLING);
   pinMode(LED_BUILTIN, OUTPUT);
 
   digitalWrite(INA1, HIGH);

@@ -6,8 +6,8 @@
 #define LCD_E 10 //D10
 #define LCD_D0 11 //D11
 #define LCD_D1 12 //D12
-#define LCD_D2 A5 
-#define LCD_D3 A4
+#define LCD_D2 8 
+#define LCD_D3 6
 #define LCD_D4 A3
 #define LCD_D5 A2
 #define LCD_D6 A1
@@ -37,13 +37,14 @@ void lcd_scroll_string(char * str, int row){
   int len = strlen(str);
   char string_copy[300];
   strcpy(string_copy, str);
+  lcd.setCursor(0,row);
   for (int ii = 0; ii < (len + 1); ++ii){
     
     for (int jj = 0; jj < 20; ++jj){
       lcd.write(str[((jj+ii) % len)]);
     }
 
-    delay(1000);
+    delay(700);
     lcd.setCursor(0,row); //20 chars up start at row col 0
     
   }
