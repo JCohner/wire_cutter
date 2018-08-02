@@ -12,41 +12,162 @@ void setup() {
 }
 
 char incomingByte = 0;
-volatile int machine_state = 0;
-bool state_state = 1;
-char my_string[300] = "Enter wire length (ft): ";
+volatile char machine_state = '0';
+volatile char length_spec_char;
+bool state_state_0 = 1;
+bool state_state_A = 1;
+bool state_state_D = 1;
+bool state_state_E = 1;
+bool state_state_B = 1;
+bool state_state_pound = 1;
+
+char zero_prompt_0[21] = "Load Spool";
+char zero_prompt_1[21] = "Press A when done";
+
+char A_prompt_0[21] = "Enter Desired Length";
+char A_prompt_1[21] = "Press D when done";
+char A_prompt_buffer[21];
+volatile int A_prompt_buffer_indexer = 0; //^buffer indexer
+volatile int wire_length;
+
+char D_prompt_0[21] = "Desired Length (ft):";
+char D_prompt_1[7];
+char D_prompt_2[21]= "Press B to begin";
+
+char E_prompt_0[7] = "Error!";
+char E_prompt_1_flag1[21] = "input > 32757";
+char E_prompt_1_flag2[21] = "input len > 6 chars";
+char E_prompt_3[21] = "Press A to reinput";
+volatile int E_flag = 0;
+
+char B_prompt_0[21] = "Spooling!";
+char B_prompt_1[21] = "Pres # to abort";
+char B_prompt_2[21];
+
+char pound_prompt_0[21] = "Spooling Aborted!";
+char pound_prompt_1[21] = "Pres A to reinput";
+
+char default_prompt[20] = "No Mans Land Fam";
+
 void loop() {
+  //Serial.println(machine_state);
   switch (machine_state){
-    case 0:
-      if(state_state){
-        lcd.home();
-        lcd.cursor();
-        lcd_scroll_string(my_string,0);
-        state_state = 0;
+    case '0':
+      if(state_state_0){
+        lcd.clear();
+        lcd.print(zero_prompt_0);
+        lcd.setCursor(0,1);
+        lcd.print(zero_prompt_1);
+        state_state_0 = 0;
       }
+      state_state_A = 1;
+      state_state_D = 1;
+      state_state_E = 1;
+      state_state_B = 1;
+      state_state_pound = 1;
       break;
-    case 1:
+    case 'A':
+      if(state_state_A){
+        lcd.clear();
+        lcd.print(A_prompt_0);
+        lcd.setCursor(0,1);
+        lcd.print(A_prompt_1);
+        lcd.setCursor(0,2);
+        A_prompt_buffer_indexer=0;
+        memset(A_prompt_buffer,'\0',sizeof(A_prompt_buffer));
+        state_state_A = 0;
+      }
+      state_state_0 = 1;
+      state_state_D = 1;
+      state_state_E = 1;
+      state_state_B = 1;
+      state_state_pound = 1;
       break;
-    case 2:
+    case 'D':
+      if(state_state_D){
+        lcd.clear();
+        lcd.print(D_prompt_0);
+        lcd.setCursor(0,1);
+        itoa(wire_length,D_prompt_1,10);
+        int bounds_check = atoi(D_prompt_1);
+        if ((bounds_check < 0 )|| (bounds_check > 32757)){
+          machine_state = 'E';
+          E_flag = 1;
+          break;
+        }
+        lcd.print(D_prompt_1);
+        lcd.setCursor(0,2);
+        lcd.print(D_prompt_2);
+        state_state_D = 0;
+      }
+      state_state_0 = 1;
+      state_state_A = 1;
+      state_state_E = 1;
+      state_state_B = 1;
+      state_state_pound = 1;
       break;
+    case 'E':
+      if(state_state_E){
+        lcd.clear();
+        lcd.print(E_prompt_0);
+        lcd.setCursor(0,1);
+        if(E_flag == 1){ 
+          lcd.print(E_prompt_1_flag1);
+        } else if (E_flag == 2){
+          lcd.print(E_prompt_1_flag2);
+        }
+
+        lcd.setCursor(0,3);
+        lcd.print(E_prompt_3);
+        
+        state_state_E = 0;
+      }
+      state_state_0 = 1;
+      state_state_A = 1;
+      state_state_D = 1;
+      state_state_B = 1;
+      state_state_pound = 1;
+      break;
+    case 'B':
+      if(state_state_B){
+        lcd.clear();
+        lcd.print(B_prompt_0);
+        lcd.setCursor(0,1);
+        lcd.print(B_prompt_1);
+        motor_speed(100); 
+        state_state_B = 0;
+      }
+      sprintf(B_prompt_2, "%d", get_CW());
+      lcd.setCursor(0,2);
+      lcd.write(B_prompt_2);
+      state_state_0 = 1;
+      state_state_A = 1;
+      state_state_D = 1;
+      state_state_E = 1;
+      state_state_pound = 1;
+      break;
+    case '#':
+      if(state_state_pound){
+        lcd.clear();
+        lcd.print(pound_prompt_0);
+        lcd.setCursor(0,1);
+        lcd.print(pound_prompt_1);
+        motor_speed(0);
+        
+        state_state_pound = 0;
+      }
+      state_state_0 = 1;
+      state_state_A = 1;
+      state_state_D = 1;
+      state_state_E = 1; 
+      state_state_B = 1; 
+      break;
+    default:
+      state_state_0 = 1;
+      state_state_A = 1;
+      state_state_D = 1;
+      state_state_E = 1; 
+      state_state_B = 1;
+      state_state_pound = 1;  
   }
-  
-  /*
-  while(1){
-
-
-
-    
-    motor_speed(0);
-    
-    print_incoming_byte();
-    
-    lcd.setCursor(10,0);
-    lcd.print(get_CW());
-    lcd.setCursor(11,1);
-    lcd.print(get_CCW());
-    delay(100);
-  }*/
 }
-
-
