@@ -137,9 +137,10 @@ void loop() {
         motor_speed(100); 
         state_state_B = 0;
       }
-      sprintf(B_prompt_2, "%d", get_CW());
+      sprintf(B_prompt_2, "%d", get_spool_counts());
       lcd.setCursor(0,2);
       lcd.write(B_prompt_2);
+      lcd.print("   ");
       state_state_0 = 1;
       state_state_A = 1;
       state_state_D = 1;
