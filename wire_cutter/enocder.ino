@@ -1,8 +1,8 @@
 #define Interrupt_A 2 //D2
 #define Interrupt_B 3 //D3
 
-volatile unsigned int CW_count = 0;
-volatile unsigned int CCW_count = 0;
+volatile unsigned long int CW_count = 0;
+volatile unsigned long int CCW_count = 0;
 volatile char curr_state_a = 0;
 volatile char curr_state_b = 0;
 volatile char prev_state_a;
@@ -41,11 +41,15 @@ void quadrature_count_A(){
   }
 }
 
-int get_CW(void){
+unsigned long int get_CW(void){
   return CW_count;
 }
 
-int get_CCW(void){
+unsigned long int get_CCW(void){
   return CCW_count;
+}
+
+unsigned long int get_spool_counts(void){
+  return (CW_count - CCW_count);
 }
 
