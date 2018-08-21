@@ -65,12 +65,7 @@ void loop() {
         lcd.print(zero_prompt_1);
         state_state_0 = 0;
       }
-      state_state_A = 1;
-      state_state_C = 1;
-      state_state_D = 1;
-      state_state_E = 1;
-      state_state_B = 1;
-      state_state_pound = 1;
+      reenable_states(machine_state);
       break;
     case 'A':
       if(state_state_A){
@@ -83,12 +78,7 @@ void loop() {
         memset(A_prompt_buffer,'\0',sizeof(A_prompt_buffer));
         state_state_A = 0;
       }
-      state_state_0 = 1;
-      state_state_C = 1;
-      state_state_D = 1;
-      state_state_E = 1;
-      state_state_B = 1;
-      state_state_pound = 1;
+      reenable_states(machine_state);
       break;
     case 'D':
       if(state_state_D){
@@ -107,12 +97,7 @@ void loop() {
         lcd.print(D_prompt_2);
         state_state_D = 0;
       }
-      state_state_0 = 1;
-      state_state_A = 1;
-      state_state_E = 1;
-      state_state_B = 1;
-      state_state_pound = 1;
-      state_state_C = 1;
+      reenable_states(machine_state);
       break;
     case 'E':
       if(state_state_E){
@@ -130,12 +115,7 @@ void loop() {
         
         state_state_E = 0;
       }
-      state_state_0 = 1;
-      state_state_A = 1;
-      state_state_D = 1;
-      state_state_B = 1;
-      state_state_C = 1;
-      state_state_pound = 1;
+      reenable_states(machine_state);
       break;
     case 'B':
       if(state_state_B){
@@ -150,12 +130,7 @@ void loop() {
       lcd.setCursor(0,2);
       lcd.write(B_prompt_2);
       lcd.print("   ");
-      state_state_0 = 1;
-      state_state_A = 1;
-      state_state_D = 1;
-      state_state_E = 1;
-      state_state_C = 1;
-      state_state_pound = 1;
+      reenable_states(machine_state);
       break;
     case '#':
       if(state_state_pound){
@@ -167,12 +142,7 @@ void loop() {
         
         state_state_pound = 0;
       }
-      state_state_0 = 1;
-      state_state_A = 1;
-      state_state_D = 1;
-      state_state_E = 1; 
-      state_state_B = 1;
-      state_state_C = 1; 
+      reenable_states(machine_state);
       break;
     case 'C':
       if(state_state_C){
@@ -187,12 +157,7 @@ void loop() {
       lcd.setCursor(0,2);
       lcd.print(get_spool_dist(),4);
       lcd.print(" (ft)  ");
-      state_state_0 = 1;
-      state_state_A = 1;
-      state_state_D = 1;
-      state_state_E = 1; 
-      state_state_B = 1;
-      state_state_pound = 1;  
+      reenable_states(machine_state);
       break;  
     default:
       state_state_0 = 1;
@@ -204,3 +169,57 @@ void loop() {
       state_state_pound = 1;  
   }
 }
+
+void reenable_states(char state){
+  if (state == '0'){
+     state_state_A = 1;
+     state_state_D = 1;
+     state_state_E = 1; 
+     state_state_B = 1;
+     state_state_C = 1; 
+     state_state_pound = 1; 
+  } else if (state == 'A'){
+    state_state_0 = 1;
+    state_state_D = 1;
+    state_state_E = 1; 
+    state_state_B = 1;
+    state_state_C = 1; 
+    state_state_pound = 1; 
+  } else if (state == 'B'){
+    state_state_0 = 1;
+    state_state_A = 1;
+    state_state_D = 1;
+    state_state_E = 1; 
+    state_state_C = 1; 
+    state_state_pound = 1;  
+  } else if (state == 'C'){
+    state_state_0 = 1;
+    state_state_A = 1;
+    state_state_D = 1;
+    state_state_E = 1; 
+    state_state_B = 1; 
+    state_state_pound = 1; 
+  } else if (state == 'D'){
+    state_state_0 = 1;
+    state_state_A = 1;
+    state_state_B = 1;
+    state_state_E = 1; 
+    state_state_C = 1; 
+    state_state_pound = 1; 
+  } else if (state == 'E'){
+    state_state_0 = 1;
+    state_state_A = 1;
+    state_state_D = 1;
+    state_state_B = 1; 
+    state_state_C = 1; 
+    state_state_pound = 1; 
+  } else if (state == '#'){
+    state_state_0 = 1;
+    state_state_A = 1;
+    state_state_D = 1;
+    state_state_E = 1; 
+    state_state_C = 1; 
+    state_state_B = 1; 
+  }
+}
+
