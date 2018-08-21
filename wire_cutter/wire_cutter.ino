@@ -20,6 +20,7 @@ bool state_state_D = 1;
 bool state_state_E = 1;
 bool state_state_B = 1;
 bool state_state_pound = 1;
+bool state_state_C = 1;
 
 char zero_prompt_0[21] = "Load Spool";
 char zero_prompt_1[21] = "Press A when done";
@@ -47,6 +48,10 @@ char B_prompt_2[21];
 char pound_prompt_0[21] = "Spooling Aborted!";
 char pound_prompt_1[21] = "Pres A to reinput";
 
+char C_prompt_0[21] = "Encoder Count Check";
+char C_prompt_1[21] = "Counts: ";
+char C_prompt_2[21];
+
 char default_prompt[20] = "No Mans Land Fam";
 
 void loop() {
@@ -61,6 +66,7 @@ void loop() {
         state_state_0 = 0;
       }
       state_state_A = 1;
+      state_state_C = 1;
       state_state_D = 1;
       state_state_E = 1;
       state_state_B = 1;
@@ -78,6 +84,7 @@ void loop() {
         state_state_A = 0;
       }
       state_state_0 = 1;
+      state_state_C = 1;
       state_state_D = 1;
       state_state_E = 1;
       state_state_B = 1;
@@ -105,6 +112,7 @@ void loop() {
       state_state_E = 1;
       state_state_B = 1;
       state_state_pound = 1;
+      state_state_C = 1;
       break;
     case 'E':
       if(state_state_E){
@@ -126,6 +134,7 @@ void loop() {
       state_state_A = 1;
       state_state_D = 1;
       state_state_B = 1;
+      state_state_C = 1;
       state_state_pound = 1;
       break;
     case 'B':
@@ -145,6 +154,7 @@ void loop() {
       state_state_A = 1;
       state_state_D = 1;
       state_state_E = 1;
+      state_state_C = 1;
       state_state_pound = 1;
       break;
     case '#':
@@ -161,14 +171,36 @@ void loop() {
       state_state_A = 1;
       state_state_D = 1;
       state_state_E = 1; 
-      state_state_B = 1; 
+      state_state_B = 1;
+      state_state_C = 1; 
       break;
+    case 'C':
+      if(state_state_C){
+        lcd.clear();
+        lcd.print(C_prompt_0);
+        lcd.setCursor(0,1);
+        lcd.print(C_prompt_1);
+        motor_speed(0);
+        zero_spool_counts();
+        state_state_C = 0;
+      }
+      lcd.setCursor(0,2);
+      lcd.print(get_spool_dist(),4);
+      lcd.print(" (ft)  ");
+      state_state_0 = 1;
+      state_state_A = 1;
+      state_state_D = 1;
+      state_state_E = 1; 
+      state_state_B = 1;
+      state_state_pound = 1;  
+      break;  
     default:
       state_state_0 = 1;
       state_state_A = 1;
       state_state_D = 1;
       state_state_E = 1; 
       state_state_B = 1;
+      state_state_C = 1; 
       state_state_pound = 1;  
   }
 }
