@@ -30,11 +30,11 @@ void get_keypad_state(int howMany){
     }
     if(c == 'D'){
       machine_state = 'D';
-      if (strlen(A_prompt_buffer) > 5){
+      if (strlen(A_prompt_buffer) > 8){
         machine_state = 'E';
         E_flag = 2;
       }
-      wire_length = atoi(A_prompt_buffer);
+      wire_length = atof(A_prompt_buffer);
       if ((wire_length > 32757) || (wire_length < 0)){
         machine_state = 'E';
         E_flag = 1;
