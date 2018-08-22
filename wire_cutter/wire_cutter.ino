@@ -29,7 +29,7 @@ char A_prompt_0[21] = "Enter Desired Length";
 char A_prompt_1[21] = "Press D when done";
 char A_prompt_buffer[21];
 volatile int A_prompt_buffer_indexer = 0; //^buffer indexer
-volatile int wire_length;
+volatile double wire_length;
 
 char D_prompt_0[21] = "Desired Length (ft):";
 char D_prompt_1[7];
@@ -44,6 +44,11 @@ volatile int E_flag = 0;
 char B_prompt_0[21] = "Spooling!";
 char B_prompt_1[21] = "Pres # to abort";
 char B_prompt_2[21];
+double measured;
+double desired;
+double effort;
+double error;
+double kp;  
 
 char pound_prompt_0[21] = "Spooling Aborted!";
 char pound_prompt_1[21] = "Pres A to reinput";
@@ -85,14 +90,7 @@ void loop() {
         lcd.clear();
         lcd.print(D_prompt_0);
         lcd.setCursor(0,1);
-        itoa(wire_length,D_prompt_1,10);
-        int bounds_check = atoi(D_prompt_1);
-        if ((bounds_check < 0 )|| (bounds_check > 32757)){
-          machine_state = 'E';
-          E_flag = 1;
-          break;
-        }
-        lcd.print(D_prompt_1);
+        lcd.print(wire_length, 5);
         lcd.setCursor(0,2);
         lcd.print(D_prompt_2);
         state_state_D = 0;
@@ -125,11 +123,22 @@ void loop() {
         lcd.print(B_prompt_1);
         motor_speed(100); 
         state_state_B = 0;
+      } 
+      measured = get_spool_dist();
+      desired = wire_length;
+      kp = 1.0;
+      while ((measured <= desired) && (machine_state == 'B')){
+        measured = get_spool_dist();
+        error = (desired - measured)/desired; //some val hoepfully between 1 and 0
+        effort = kp * error;
+        motor_speed(effort);
+        lcd.setCursor(0,2);
+        lcd.print(get_spool_dist(),4);
+        lcd.print(" (ft)  ");
       }
-      sprintf(B_prompt_2, "%d", get_spool_counts());
       lcd.setCursor(0,2);
-      lcd.write(B_prompt_2);
-      lcd.print("   ");
+      lcd.print("Done!      ");
+      
       reenable_states(machine_state);
       break;
     case '#':
