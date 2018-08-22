@@ -35,9 +35,14 @@ void button_press (){
   
 }
 
-void motor_speed(float speed){
-  speed /= 100;
-  float analog_value = speed * 255;
+void motor_speed(float m_speed){
+  //speed /= 100;
+  if (m_speed >= 1.0){
+    m_speed = 1.0;
+  } else if (m_speed <= 0.0){
+    m_speed = 0.0;
+  }
+  float analog_value = m_speed * 255;
   int motor_pwm = (int) analog_value;
   analogWrite(PWM, motor_pwm);
   
