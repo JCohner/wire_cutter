@@ -1,5 +1,4 @@
 #include <Wire.h>
-#include <TimerOne.h>
 #include <string.h>
 
 void keypad_serial_setup(void){

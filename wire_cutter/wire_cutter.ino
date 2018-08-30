@@ -1,5 +1,4 @@
 #include <Keypad.h>
-#include <PinChangeInt.h>
 #include <LiquidCrystal.h>
 
 //Establishes global variable for LCD
