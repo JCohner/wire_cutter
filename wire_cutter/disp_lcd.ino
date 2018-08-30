@@ -16,7 +16,7 @@
 
 
 LiquidCrystal lcd_setup(){
-  /*LCD pin init*/
+  /*LCD pin init refer to pinout diagram*/
   pinMode(LCD_RS,OUTPUT);
   pinMode(LCD_E,OUTPUT);
   pinMode(LCD_D0,OUTPUT);
@@ -30,9 +30,11 @@ LiquidCrystal lcd_setup(){
   LiquidCrystal lcd(LCD_RS ,LCD_E, LCD_D0, LCD_D1, LCD_D2, LCD_D3, LCD_D4, LCD_D5, LCD_D6, LCD_D7);
   lcd.begin(20,4);
 
+  /*we return type LiquidCrystal here so that main's global Liquid Crystal can be defined*/
   return lcd;
 }
 
+/*unused but cool scrolling functionality, autoscroll dose not work well on 20x4 screen*/
 void lcd_scroll_string(char * str, int row){
   int len = strlen(str);
   char string_copy[300];

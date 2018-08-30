@@ -2,7 +2,7 @@
 #define Interrupt_B 3 //D3
 #define WHEEL_DIAM 6 //in inches 
 #include <stdio.h>
-float INCHES_PER_COUNT = 0.0117809725;//6.0 * 3.14159 / 1600.0; 
+float INCHES_PER_COUNT = 0.0117809725; //6.0 * 3.14159 / 1600.0; 
 
 volatile unsigned long int CW_count = 0;
 volatile unsigned long int CCW_count = 0;

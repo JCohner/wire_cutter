@@ -2,6 +2,7 @@
 #include <PinChangeInt.h>
 #include <LiquidCrystal.h>
 
+//Establishes global variable for LCD
 LiquidCrystal lcd = LiquidCrystal(0,0,0,0,0,0,0,0,0,0); //placeholder gives global scope
 
 void setup() {
@@ -11,6 +12,7 @@ void setup() {
   keypad_serial_setup();
 }
 
+//Global variables for state machine
 char incomingByte = 0;
 volatile char machine_state = '0';
 volatile char length_spec_char;
@@ -22,6 +24,11 @@ bool state_state_B = 1;
 bool state_state_pound = 1;
 bool state_state_C = 1;
 
+/*
+ *Character buffers for LCD prompts according to state
+ *format: "state"_prompt_"lcd_line_#"[21] = "string";
+ *21 due to oddities in detecting null character by LCD ICU
+*/
 char zero_prompt_0[21] = "Load Spool";
 char zero_prompt_1[21] = "Press A when done";
 
@@ -61,8 +68,14 @@ char default_prompt[20] = "No Mans Land Fam";
 
 void loop() {
   //Serial.println(machine_state);
+  /*
+  *State machine
+  *state_state_"state" variable ensures when within a state actions only occur once
+  *some actions like length update should take place outside this once per state gate
+  */
   switch (machine_state){
     case '0':
+      //Intro state, prompts user to set up
       if(state_state_0){
         lcd.clear();
         lcd.print(zero_prompt_0);
@@ -73,6 +86,7 @@ void loop() {
       reenable_states(machine_state);
       break;
     case 'A':
+      //indicates setup complete, prompts user to enter desired length
       if(state_state_A){
         lcd.clear();
         lcd.print(A_prompt_0);
@@ -86,6 +100,7 @@ void loop() {
       reenable_states(machine_state);
       break;
     case 'D':
+      //verifies user specified length, prompts user to press B to begin
       if(state_state_D){
         lcd.clear();
         lcd.print(D_prompt_0);
@@ -98,6 +113,7 @@ void loop() {
       reenable_states(machine_state);
       break;
     case 'E':
+      //error case, will print error
       if(state_state_E){
         lcd.clear();
         lcd.print(E_prompt_0);
@@ -116,6 +132,7 @@ void loop() {
       reenable_states(machine_state);
       break;
     case 'B':
+      //spooling state, prints how much has been spooled, drives motor proportionally
       if(state_state_B){
         lcd.clear();
         lcd.print(B_prompt_0);
@@ -127,6 +144,9 @@ void loop() {
       measured = get_spool_dist();
       desired = wire_length;
       kp = 1.0;
+      /*Control loop for motor driving during spooling
+       *currently just P control
+      */
       while ((measured <= desired) && (machine_state == 'B')){
         measured = get_spool_dist();
         error = (desired - measured)/desired; //some val hoepfully between 1 and 0
@@ -154,6 +174,7 @@ void loop() {
       reenable_states(machine_state);
       break;
     case 'C':
+      //check state used for debugging and or pulling wire through without motor driving it
       if(state_state_C){
         lcd.clear();
         lcd.print(C_prompt_0);
@@ -169,6 +190,7 @@ void loop() {
       reenable_states(machine_state);
       break;  
     default:
+      //if default state entered renable all states
       state_state_0 = 1;
       state_state_A = 1;
       state_state_D = 1;
@@ -179,6 +201,11 @@ void loop() {
   }
 }
 
+
+/*
+*reenable_states takes the current state as a char as an argument and reenables
+*all other states accordingly
+*/
 void reenable_states(char state){
   if (state == '0'){
      state_state_A = 1;

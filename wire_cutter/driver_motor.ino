@@ -35,8 +35,8 @@ void button_press (){
   
 }
 
+/*set motor speed between 0.0 and 1.0*/
 void motor_speed(float m_speed){
-  //speed /= 100;
   if (m_speed >= 1.0){
     m_speed = 1.0;
   } else if (m_speed <= 0.0){
@@ -44,7 +44,6 @@ void motor_speed(float m_speed){
   }
   float analog_value = m_speed * 255;
   int motor_pwm = (int) analog_value;
-  analogWrite(PWM, motor_pwm);
-  
+  analogWrite(PWM, motor_pwm); 
 }
 
